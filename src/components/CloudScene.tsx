@@ -5,8 +5,8 @@ interface CloudSceneProps {
   bgColor?: string;
 }
 
-const Cloud = ({ className }: { className?: string }) => (
-  <svg viewBox="0 0 200 80" className={className} fill="white">
+const Cloud = ({ className, style }: { className?: string; style?: React.CSSProperties }) => (
+  <svg viewBox="0 0 200 80" className={className} style={style} fill="white">
     <ellipse cx="60" cy="55" rx="55" ry="25" />
     <ellipse cx="100" cy="40" rx="40" ry="22" />
     <ellipse cx="140" cy="55" rx="50" ry="25" />
@@ -14,8 +14,8 @@ const Cloud = ({ className }: { className?: string }) => (
   </svg>
 );
 
-const PinkCloud = ({ className }: { className?: string }) => (
-  <svg viewBox="0 0 160 60" className={className} fill="#F9D5D3">
+const PinkCloud = ({ className, style }: { className?: string; style?: React.CSSProperties }) => (
+  <svg viewBox="0 0 160 60" className={className} style={style} fill="#F9D5D3">
     <ellipse cx="50" cy="40" rx="45" ry="20" />
     <ellipse cx="90" cy="30" rx="35" ry="18" />
     <ellipse cx="110" cy="40" rx="40" ry="20" />
