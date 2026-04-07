@@ -94,6 +94,8 @@ const Index = () => {
       {overlay === "grounding" && <GroundingScreen onClose={closeOverlay} />}
       {overlay === "shredder" && <ShredderScreen onClose={closeOverlay} />}
       {overlay === "sounds" && <SoundsScreen onClose={closeOverlay} />}
+      {overlay === "therapists" && <TherapistBookingScreen onClose={closeOverlay} />}
+      {overlay === "journal-new" && <JournalNewScreen onClose={closeOverlay} />}
     </div>
   );
 };
