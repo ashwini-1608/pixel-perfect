@@ -4,6 +4,9 @@ import CloudScene from "@/components/CloudScene";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import SparkleIcon from "@/components/SparkleIcon";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { Loader2 } from "lucide-react";
 
 interface LoginScreenProps {
   onLogin: () => void;
@@ -15,19 +18,51 @@ const LoginScreen = ({ onLogin, onBack }: LoginScreenProps) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // For now, just proceed — backend auth can be added later
-    if (name.trim() || mode === "login") {
-      localStorage.setItem("sera_user_name", name || "Friend");
-      onLogin();
+    if (!email || !password) {
+      toast({ title: "Please fill in all fields", variant: "destructive" });
+      return;
+    }
+    setLoading(true);
+
+    try {
+      if (mode === "signup") {
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: { display_name: name || "Friend" },
+            emailRedirectTo: window.location.origin,
+          },
+        });
+        if (error) throw error;
+        toast({
+          title: "Account created!",
+          description: "Check your email to verify, or continue exploring.",
+        });
+        onLogin();
+      } else {
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        onLogin();
+      }
+    } catch (err: any) {
+      toast({
+        title: mode === "login" ? "Login failed" : "Sign up failed",
+        description: err.message,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="min-h-screen bg-background max-w-md mx-auto flex flex-col">
-      {/* Orange header with mascot */}
       <CloudScene bgColor="bg-gradient-to-b from-sera-orange/80 to-sera-orange/40">
         <MascotSera size="lg" mood="happy" className="mt-2" />
         <p className="text-white font-heading font-bold text-lg mt-2">
@@ -35,7 +70,6 @@ const LoginScreen = ({ onLogin, onBack }: LoginScreenProps) => {
         </p>
       </CloudScene>
 
-      {/* Form */}
       <form
         onSubmit={handleSubmit}
         className="flex-1 flex flex-col px-8 py-6 gap-4 animate-fade-in-up"
@@ -77,9 +111,16 @@ const LoginScreen = ({ onLogin, onBack }: LoginScreenProps) => {
 
         <Button
           type="submit"
+          disabled={loading}
           className="w-full h-12 rounded-full bg-sera-orange hover:bg-sera-orange/90 text-white font-heading font-bold text-base mt-2"
         >
-          {mode === "login" ? "Log In" : "Create Account"}
+          {loading ? (
+            <Loader2 className="animate-spin" size={20} />
+          ) : mode === "login" ? (
+            "Log In"
+          ) : (
+            "Create Account"
+          )}
         </Button>
 
         <div className="text-center">
@@ -94,7 +135,6 @@ const LoginScreen = ({ onLogin, onBack }: LoginScreenProps) => {
           </button>
         </div>
 
-        {/* Continue as guest */}
         <button
           type="button"
           onClick={onLogin}

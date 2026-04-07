@@ -13,6 +13,7 @@ import ShredderScreen from "@/pages/ShredderScreen";
 import SoundsScreen from "@/pages/SoundsScreen";
 import OnboardingScreen from "@/pages/OnboardingScreen";
 import LoginScreen from "@/pages/LoginScreen";
+import { supabase } from "@/integrations/supabase/client";
 
 type AppScreen = "onboarding" | "login" | "app";
 
@@ -24,6 +25,31 @@ const Index = () => {
   });
   const [activeTab, setActiveTab] = useState<TabId>("home");
   const [overlay, setOverlay] = useState<string | null>(null);
+
+  // Listen for auth state changes
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        if (event === "SIGNED_IN" && session) {
+          localStorage.setItem("sera_onboarded", "true");
+          setScreen("app");
+        }
+        if (event === "SIGNED_OUT") {
+          setScreen("login");
+        }
+      }
+    );
+
+    // Check existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        localStorage.setItem("sera_onboarded", "true");
+        setScreen("app");
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const handleOnboardingComplete = () => setScreen("login");
 
