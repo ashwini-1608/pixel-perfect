@@ -11,6 +11,8 @@ import SOSScreen from "@/pages/SOSScreen";
 import GroundingScreen from "@/pages/GroundingScreen";
 import ShredderScreen from "@/pages/ShredderScreen";
 import SoundsScreen from "@/pages/SoundsScreen";
+import TherapistBookingScreen from "@/pages/TherapistBookingScreen";
+import JournalNewScreen from "@/pages/JournalNewScreen";
 import OnboardingScreen from "@/pages/OnboardingScreen";
 import LoginScreen from "@/pages/LoginScreen";
 import { supabase } from "@/integrations/supabase/client";
