@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import BottomNav, { type TabId } from "@/components/BottomNav";
 import SOSButton from "@/components/SOSButton";
 import HomeTab from "@/pages/HomeTab";
@@ -11,26 +11,49 @@ import SOSScreen from "@/pages/SOSScreen";
 import GroundingScreen from "@/pages/GroundingScreen";
 import ShredderScreen from "@/pages/ShredderScreen";
 import SoundsScreen from "@/pages/SoundsScreen";
+import OnboardingScreen from "@/pages/OnboardingScreen";
+import LoginScreen from "@/pages/LoginScreen";
+
+type AppScreen = "onboarding" | "login" | "app";
 
 const Index = () => {
+  const [screen, setScreen] = useState<AppScreen>(() => {
+    const seen = localStorage.getItem("sera_onboarded");
+    if (seen) return "app";
+    return "onboarding";
+  });
   const [activeTab, setActiveTab] = useState<TabId>("home");
   const [overlay, setOverlay] = useState<string | null>(null);
 
-  const handleNavigate = (screen: string) => {
-    if (["breathe", "grounding", "shredder", "sounds", "sos"].includes(screen)) {
-      setOverlay(screen);
-    } else if (screen === "journal-new") {
+  const handleOnboardingComplete = () => setScreen("login");
+
+  const handleLogin = () => {
+    localStorage.setItem("sera_onboarded", "true");
+    setScreen("app");
+  };
+
+  const handleNavigate = (navScreen: string) => {
+    if (["breathe", "grounding", "shredder", "sounds", "sos"].includes(navScreen)) {
+      setOverlay(navScreen);
+    } else if (navScreen === "journal-new") {
       setActiveTab("journal");
-    } else if (screen === "therapists") {
+    } else if (navScreen === "therapists") {
       setActiveTab("counselling");
     }
   };
 
   const closeOverlay = () => setOverlay(null);
 
+  if (screen === "onboarding") {
+    return <OnboardingScreen onComplete={handleOnboardingComplete} />;
+  }
+
+  if (screen === "login") {
+    return <LoginScreen onLogin={handleLogin} onBack={() => setScreen("onboarding")} />;
+  }
+
   return (
     <div className="min-h-screen bg-background max-w-md mx-auto relative overflow-x-hidden">
-      {/* Tab content */}
       <div className="min-h-screen">
         {activeTab === "home" && <HomeTab onNavigate={handleNavigate} />}
         {activeTab === "meditate" && <MeditateTab onNavigate={handleNavigate} />}
@@ -39,13 +62,9 @@ const Index = () => {
         {activeTab === "counselling" && <CounsellingTab onNavigate={handleNavigate} />}
       </div>
 
-      {/* Bottom nav */}
       <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />
-
-      {/* SOS floating button */}
       <SOSButton onClick={() => setOverlay("sos")} />
 
-      {/* Full-screen overlays */}
       {overlay === "breathe" && <BreatheScreen onClose={closeOverlay} />}
       {overlay === "sos" && <SOSScreen onClose={closeOverlay} />}
       {overlay === "grounding" && <GroundingScreen onClose={closeOverlay} />}
