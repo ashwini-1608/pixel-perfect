@@ -8,10 +8,16 @@
   "theme_color": "#FF8C00",
   "icons": [
     {
-      "src": "https://lovable.dev/opengraph-image-p98pqg.png",
+      "src": "/icon.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
+    },
+    {
+      "src": "/icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }
