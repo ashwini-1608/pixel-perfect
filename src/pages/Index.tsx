@@ -61,12 +61,8 @@ const Index = () => {
   };
 
   const handleNavigate = (navScreen: string) => {
-    if (["breathe", "grounding", "shredder", "sounds", "sos"].includes(navScreen)) {
+    if (["breathe", "grounding", "shredder", "sounds", "sos", "therapists", "journal-new"].includes(navScreen)) {
       setOverlay(navScreen);
-    } else if (navScreen === "journal-new") {
-      setActiveTab("journal");
-    } else if (navScreen === "therapists") {
-      setActiveTab("counselling");
     }
   };
 
