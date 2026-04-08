@@ -3,7 +3,7 @@ import MascotSera from "@/components/MascotSera";
 import SparkleIcon from "@/components/SparkleIcon";
 import { getDailyQuote } from "@/data/quotes";
 import { useState } from "react";
-import { Wind, Compass, BookOpen, Music } from "lucide-react";
+import { Wind, Compass, BookOpen, Music, UserCircle } from "lucide-react";
 
 const moods = ["😔", "😟", "😐", "🙂", "😄"];
 
@@ -43,7 +43,12 @@ const HomeTab = ({ onNavigate }: HomeTabProps) => {
           <h1 className="text-2xl font-heading font-bold">{greeting}</h1>
           <p className="text-muted-foreground text-sm mt-1">{today}</p>
         </div>
-        <MascotSera size="sm" mood="idle" />
+        <div className="flex items-center gap-2">
+          <button onClick={() => onNavigate("profile")} className="p-1.5 rounded-full hover:bg-card transition-colors">
+            <UserCircle size={26} className="text-muted-foreground" />
+          </button>
+          <MascotSera size="sm" mood="idle" />
+        </div>
       </div>
 
       {/* Mood check-in */}
