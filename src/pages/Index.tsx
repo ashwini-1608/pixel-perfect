@@ -13,6 +13,7 @@ import ShredderScreen from "@/pages/ShredderScreen";
 import SoundsScreen from "@/pages/SoundsScreen";
 import TherapistBookingScreen from "@/pages/TherapistBookingScreen";
 import JournalNewScreen from "@/pages/JournalNewScreen";
+import ProfileScreen from "@/pages/ProfileScreen";
 import OnboardingScreen from "@/pages/OnboardingScreen";
 import LoginScreen from "@/pages/LoginScreen";
 import { supabase } from "@/integrations/supabase/client";
@@ -61,7 +62,7 @@ const Index = () => {
   };
 
   const handleNavigate = (navScreen: string) => {
-    if (["breathe", "grounding", "shredder", "sounds", "sos", "therapists", "journal-new"].includes(navScreen)) {
+    if (["breathe", "grounding", "shredder", "sounds", "sos", "therapists", "journal-new", "profile"].includes(navScreen)) {
       setOverlay(navScreen);
     }
   };
@@ -96,6 +97,7 @@ const Index = () => {
       {overlay === "sounds" && <SoundsScreen onClose={closeOverlay} />}
       {overlay === "therapists" && <TherapistBookingScreen onClose={closeOverlay} />}
       {overlay === "journal-new" && <JournalNewScreen onClose={closeOverlay} />}
+      {overlay === "profile" && <ProfileScreen onClose={closeOverlay} />}
     </div>
   );
 };
