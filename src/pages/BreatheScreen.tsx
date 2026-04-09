@@ -18,8 +18,10 @@ const BreatheScreen = ({ onClose }: BreatheScreenProps) => {
   const [breathCount, setBreathCount] = useState(0);
   const [totalBreaths] = useState(5);
   const [progress, setProgress] = useState(0);
+  const [phaseSecondsLeft, setPhaseSecondsLeft] = useState<number | null>(null);
   const timerRef = useRef<number | null>(null);
   const animFrameRef = useRef<number | null>(null);
+  const intervalRef = useRef<number | null>(null);
 
   const pattern = patterns[patternIndex];
 
@@ -39,6 +41,8 @@ const BreatheScreen = ({ onClose }: BreatheScreenProps) => {
       const elapsed = now - start;
       const t = Math.min(elapsed / (duration * 1000), 1);
       setProgress(reverse ? 1 - t : t);
+      const remainingSeconds = Math.max(1, Math.ceil((1 - t) * duration));
+      setPhaseSecondsLeft(remainingSeconds);
       if (t < 1) {
         animFrameRef.current = requestAnimationFrame(animate);
       } else {
@@ -52,18 +56,34 @@ const BreatheScreen = ({ onClose }: BreatheScreenProps) => {
     if (breathNum >= totalBreaths) {
       setPhase("done");
       setProgress(0);
+      setPhaseSecondsLeft(null);
       return;
     }
     setBreathCount(breathNum);
 
     // Inhale
     setPhase("inhale");
+    setPhaseSecondsLeft(pattern.inhale);
     animatePhase(pattern.inhale, false, () => {
       // Hold
       setPhase("hold");
+      setPhaseSecondsLeft(pattern.hold);
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      let holdRemaining = pattern.hold;
+      intervalRef.current = window.setInterval(() => {
+        holdRemaining -= 1;
+        if (holdRemaining > 0) {
+          setPhaseSecondsLeft(holdRemaining);
+        }
+      }, 1000);
       timerRef.current = window.setTimeout(() => {
+        if (intervalRef.current) {
+          clearInterval(intervalRef.current);
+          intervalRef.current = null;
+        }
         // Exhale
         setPhase("exhale");
+        setPhaseSecondsLeft(pattern.exhale);
         animatePhase(pattern.exhale, true, () => {
           runBreathCycle(breathNum + 1);
         });
@@ -81,12 +101,14 @@ const BreatheScreen = ({ onClose }: BreatheScreenProps) => {
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
       if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+      if (intervalRef.current) clearInterval(intervalRef.current);
     };
   }, [patternIndex]);
 
   const handlePatternChange = (index: number) => {
     if (timerRef.current) clearTimeout(timerRef.current);
     if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+    if (intervalRef.current) clearInterval(intervalRef.current);
     setPatternIndex(index);
   };
 
@@ -155,7 +177,7 @@ const BreatheScreen = ({ onClose }: BreatheScreenProps) => {
           <span className="text-2xl font-heading font-bold text-card-foreground">{phaseText}</span>
           {phase !== "done" && phase !== "idle" && (
             <span className="text-sm text-card-foreground/70 mt-1 font-body">
-              {totalBreaths - breathCount} breaths left
+              {phaseSecondsLeft ?? 0}s
             </span>
           )}
         </div>
