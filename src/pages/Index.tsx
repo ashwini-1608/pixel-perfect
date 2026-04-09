@@ -28,6 +28,7 @@ const Index = () => {
   });
   const [activeTab, setActiveTab] = useState<TabId>("home");
   const [overlay, setOverlay] = useState<string | null>(null);
+  const [journalRefresh, setJournalRefresh] = useState(0);
 
   // Listen for auth state changes
   useEffect(() => {
@@ -67,7 +68,10 @@ const Index = () => {
     }
   };
 
-  const closeOverlay = () => setOverlay(null);
+  const closeOverlay = () => {
+    setOverlay(null);
+    setJournalRefresh((k) => k + 1);
+  };
 
   if (screen === "onboarding") {
     return <OnboardingScreen onComplete={handleOnboardingComplete} />;
@@ -83,7 +87,7 @@ const Index = () => {
         {activeTab === "home" && <HomeTab onNavigate={handleNavigate} />}
         {activeTab === "meditate" && <MeditateTab onNavigate={handleNavigate} />}
         {activeTab === "calm" && <CalmTab onNavigate={handleNavigate} />}
-        {activeTab === "journal" && <JournalTab onNavigate={handleNavigate} />}
+        {activeTab === "journal" && <JournalTab onNavigate={handleNavigate} refreshKey={journalRefresh} />}
         {activeTab === "counselling" && <CounsellingTab onNavigate={handleNavigate} />}
       </div>
 

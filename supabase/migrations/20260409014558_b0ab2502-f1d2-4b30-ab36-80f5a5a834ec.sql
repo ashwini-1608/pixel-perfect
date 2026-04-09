@@ -1,0 +1,1 @@
+ALTER TABLE public.journal_entries DROP CONSTRAINT journal_entries_user_id_fkey;

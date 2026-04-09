@@ -15,9 +15,10 @@ interface JournalEntry {
 
 interface JournalTabProps {
   onNavigate: (screen: string) => void;
+  refreshKey?: number;
 }
 
-const JournalTab = ({ onNavigate }: JournalTabProps) => {
+const JournalTab = ({ onNavigate, refreshKey }: JournalTabProps) => {
   const [entries, setEntries] = useState<JournalEntry[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -32,7 +33,7 @@ const JournalTab = ({ onNavigate }: JournalTabProps) => {
 
   useEffect(() => {
     fetchEntries();
-  }, []);
+  }, [refreshKey]);
 
   // Refetch when returning from new-entry overlay
   useEffect(() => {
