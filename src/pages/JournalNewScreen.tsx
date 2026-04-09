@@ -23,15 +23,13 @@ const JournalNewScreen = ({ onClose }: JournalNewScreenProps) => {
     }
 
     setSaving(true);
+
+    // Try to get logged-in user; fall back to a fixed demo UUID
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      toast({ title: "Not signed in", description: "Please log in to save entries." });
-      setSaving(false);
-      return;
-    }
+    const userId = user?.id ?? "00000000-0000-0000-0000-000000000000";
 
     const { error } = await supabase.from("journal_entries").insert({
-      user_id: user.id,
+      user_id: userId,
       mood: selectedMood,
       text,
     });
