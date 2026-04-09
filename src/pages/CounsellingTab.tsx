@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { BookOpen, Calendar, ChevronRight } from "lucide-react";
-import { articles } from "@/data/articles";
+import { articles, Article } from "@/data/articles";
 import { therapists } from "@/data/therapists";
+import ArticleDetail from "@/components/ArticleDetail";
 
 const categories = ["All", "Anxiety", "CBT", "Mindfulness", "Sleep", "Stress"];
 
@@ -11,10 +12,15 @@ interface CounsellingTabProps {
 
 const CounsellingTab = ({ onNavigate }: CounsellingTabProps) => {
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [openArticle, setOpenArticle] = useState<Article | null>(null);
 
   const filtered = selectedCategory === "All"
     ? articles
     : articles.filter((a) => a.category === selectedCategory);
+
+  if (openArticle) {
+    return <ArticleDetail article={openArticle} onClose={() => setOpenArticle(null)} />;
+  }
 
   return (
     <div className="pb-24">
@@ -61,9 +67,10 @@ const CounsellingTab = ({ onNavigate }: CounsellingTabProps) => {
         {/* Articles */}
         <div className="mt-4 space-y-3">
           {filtered.map((article) => (
-            <div
+            <button
               key={article.id}
-              className="bg-card rounded-2xl p-4 transition-transform duration-200 hover:scale-[1.01]"
+              onClick={() => setOpenArticle(article)}
+              className="bg-card rounded-2xl p-4 transition-transform duration-200 hover:scale-[1.01] w-full text-left"
             >
               <div className="flex items-start justify-between">
                 <div className="flex-1 min-w-0">
@@ -76,7 +83,7 @@ const CounsellingTab = ({ onNavigate }: CounsellingTabProps) => {
                 </div>
                 <BookOpen size={18} className="text-muted-foreground/30 ml-3 flex-shrink-0 mt-6" />
               </div>
-            </div>
+            </button>
           ))}
         </div>
 

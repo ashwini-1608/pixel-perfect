@@ -1,7 +1,22 @@
 import { sounds } from "@/data/sounds";
-import { ArrowLeft, Play, Pause } from "lucide-react";
+import { ArrowLeft, Moon, Cloud, Waves, Gem, Sun, Bell, Dna, CloudRain, TreePine, Circle } from "lucide-react";
 import { useState } from "react";
 import SparkleIcon from "@/components/SparkleIcon";
+
+const soundIconMap: Record<string, React.ReactNode> = {
+  delta: <Moon size={24} className="text-card-foreground/80" />,
+  theta: <Cloud size={24} className="text-card-foreground/80" />,
+  alpha: <Waves size={24} className="text-card-foreground/80" />,
+  beta: <Gem size={24} className="text-card-foreground/80" />,
+  gamma: <Sun size={24} className="text-card-foreground/80" />,
+  bowls: <Bell size={24} className="text-card-foreground/80" />,
+  "528hz": <Dna size={24} className="text-card-foreground/80" />,
+  ocean: <Waves size={24} className="text-card-foreground/80" />,
+  rain: <CloudRain size={24} className="text-card-foreground/80" />,
+  forest: <TreePine size={24} className="text-card-foreground/80" />,
+  brown: <Circle size={24} className="text-card-foreground/80" fill="currentColor" />,
+  white: <Circle size={24} className="text-card-foreground/80" />,
+};
 
 interface SoundsScreenProps {
   onClose: () => void;
@@ -44,7 +59,7 @@ const SoundsScreen = ({ onClose }: SoundsScreenProps) => {
                     }`}
                     style={{ background: sound.color }}
                   >
-                    <span className="text-2xl">{sound.icon}</span>
+                    <span>{soundIconMap[sound.id] ?? sound.icon}</span>
                     <div>
                       <p className="text-sm font-heading font-bold text-card-foreground text-left">{sound.name}</p>
                       {sound.hz && (
