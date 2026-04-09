@@ -33,7 +33,7 @@ const JournalTab = ({ onNavigate, refreshKey }: JournalTabProps) => {
 
   useEffect(() => {
     fetchEntries();
-  }, []);
+  }, [refreshKey]);
 
   // Refetch when returning from new-entry overlay
   useEffect(() => {

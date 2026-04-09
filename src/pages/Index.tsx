@@ -28,6 +28,7 @@ const Index = () => {
   });
   const [activeTab, setActiveTab] = useState<TabId>("home");
   const [overlay, setOverlay] = useState<string | null>(null);
+  const [journalRefresh, setJournalRefresh] = useState(0);
 
   // Listen for auth state changes
   useEffect(() => {
